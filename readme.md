@@ -1,4 +1,4 @@
-# Go Mod Check Action
+# Go Mod Check
 
 This Github Action will ensure your `go.mod` & `go.sum` file are up-to-date and don't require
 any changes (are good to be merged).
@@ -22,7 +22,7 @@ This Github Action must be run after the following conditions are met in your Gi
 Add this action as a step after you have checked out your code and installed go.
 
 ```yaml
-- uses: j0hnsmith/go-mod-check-action@v1
+- uses: j0hnsmith/go-mod-check@v1
   with:
     working-directory: some/path/to/dir/with/go.mod # required
     skip-replace-check: true # optional, only if you're happy to have `replace ` lines in your go.mod file
