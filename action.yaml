@@ -1,0 +1,34 @@
+name: "Go mod check"
+description: "Checks `go mod tidy` doesn't change anything and `go.mod` doesn't have any lines that start with `replace ` "
+author: "j0hnsmith"
+branding:
+  icon: check-square
+  color: green
+
+inputs:
+  working-directory:
+    description: "The directory where the `go.mod` file is"
+    required: true
+  skip-replace-check:
+    description: "Skip check that `go.mod` doesn't have any lines that start with `replace `"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: check for 'replace' in go.mod
+      if: ${{ !inputs.skip-replace-check }}
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: |
+        ! grep '^replace ' go.mod || (echo "go.mod contains a line that starts with 'replace '" && exit 1)
+
+    - name: Check go mod tidy makes no changes
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        go mod tidy;
+        DIFF=$(git diff .);
+        if [ -n "$DIFF" ]; then
+          echo "$DIFF" && echo "run 'go mod tidy' and commit the changes" && exit 1;
+        fi
